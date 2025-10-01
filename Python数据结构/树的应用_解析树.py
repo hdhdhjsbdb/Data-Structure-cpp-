@@ -14,13 +14,13 @@ class stack:
     def __init__(self):
         self.items = []
 
-    def pop(self,item):
+    def push(self,item):
         self.items.append(item)
 
     def isEmpty(self):
         return len(self.items)==0
 
-    def push(self):
+    def pop(self):
         if not self.isEmpty():
             return self.items.pop()
 
@@ -34,6 +34,7 @@ class stack:
 
 def buildParseTree(fpexp):
     fplist = fpexp.split()
+    print(fplist)
     pStack = stack()
     eTree = BinaryTree('')
     pStack.push(eTree)
@@ -49,7 +50,7 @@ def buildParseTree(fpexp):
             currentTree = parent
         elif i in ['+','-','*','/']:
             currentTree.setRootVal(i)
-            currentTree.insertLeft('')
+            currentTree.insertRight('')
             pStack.push(currentTree)
             currentTree = currentTree.getRightChild()
         elif i ==')':
@@ -70,7 +71,7 @@ def evaluate(parseTree):
         return parseTree.getRootVal()
 
 if __name__ == '__main__':
-    x = "(4+3)*((5+5-2)/2)"
+    x = "( 4 + 3 )"
     tree = buildParseTree(x)
     print(evaluate(tree))
 
