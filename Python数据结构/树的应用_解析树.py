@@ -34,7 +34,6 @@ class stack:
 
 def buildParseTree(fpexp):
     fplist = fpexp.split()
-    print(fplist)
     pStack = stack()
     eTree = BinaryTree('')
     pStack.push(eTree)
@@ -59,6 +58,11 @@ def buildParseTree(fpexp):
             raise ValueError
     return eTree
 def evaluate(parseTree):
+    """
+    递归方法计算表达式
+    :param parseTree: 表达式树
+    :return: 表达式的值
+    """
     opers = {'+':operator.add ,'-':operator.sub,
              '*':operator.mul , '/':operator.truediv}
     leftC = parseTree.getLeftChild()
@@ -70,8 +74,45 @@ def evaluate(parseTree):
     else:
         return parseTree.getRootVal()
 
+def postordereval(tree):
+    """
+    中序遍历方法计算表达式
+    :param tree: 表达式树
+    :return: 计算结果
+    """
+    opers = {'+': operator.add, '-': operator.sub,
+             '*': operator.mul, '/': operator.truediv}
+    res1 = None
+    res2 = None
+    if tree:
+        res1 = postordereval(tree.getLeftChild())
+        res2 = postordereval(tree.getRightChild())
+        if res2 and res2:
+            return opers[tree.getRootVal()](res1,res2)
+        else:
+            return tree.getRootVal()
+
+def printexp(tree):
+    """
+    生成全括号中缀表达式
+    :param tree: 表达式树
+    :return: 表达式字符串
+    """
+    sVal = ''
+    if tree:
+        if tree.leftChild:
+            sVal = '('+printexp(tree.getLeftChild())
+            sVal = sVal + str(tree.getRootVal())
+            sVal = sVal + printexp(tree.getRightChild())+')'
+        else:
+            sVal = printexp(tree.getLeftChild())
+            sVal = sVal + str(tree.getRootVal())
+            sVal = sVal + printexp(tree.getRightChild())
+    return sVal
+
 if __name__ == '__main__':
-    x = "( 4 + 3 )"
+    x = "( ( 4 + 3 ) * ( 10 / 2 )"
     tree = buildParseTree(x)
-    print(evaluate(tree))
+    print(printexp(tree))
+    print(postordereval(tree))
 
